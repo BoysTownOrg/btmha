@@ -1,0 +1,67 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="..\btmha.c">
+      <Filter>Source FIles</Filter>
+    </ClCompile>
+    <ClCompile Include="..\eval.c">
+      <Filter>Source FIles</Filter>
+    </ClCompile>
+    <ClCompile Include="..\interactive.c">
+      <Filter>Source FIles</Filter>
+    </ClCompile>
+    <ClCompile Include="..\optimize.c">
+      <Filter>Source FIles</Filter>
+    </ClCompile>
+    <ClCompile Include="..\process.c">
+      <Filter>Source FIles</Filter>
+    </ClCompile>
+    <ClCompile Include="..\state.c">
+      <Filter>Source FIles</Filter>
+    </ClCompile>
+    <ClCompile Include="..\stream.c">
+      <Filter>Source FIles</Filter>
+    </ClCompile>
+    <ClCompile Include="..\var_list.c">
+      <Filter>Source FIles</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\btmha.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\eval.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\var_list.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Resource Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\version.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{4abfd9b1-e747-4c8b-81b5-14c0b6681306}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source FIles">
+      <UniqueIdentifier>{06cce3e4-a47f-413a-900f-c8e7c946a5a5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{e3743e28-9a80-4f5c-8d3c-22591af392d3}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\btmha.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="btmha.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+</Project>
