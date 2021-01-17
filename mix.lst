@@ -1,0 +1,5 @@
+# mix.lst - mixer example
+input=test/carrots.wav
+output=playback
+process=mixer
+mixer=1

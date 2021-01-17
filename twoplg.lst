@@ -1,0 +1,13 @@
+# twoplg.lst - two-plugin example
+plugin1     = gha
+plugin2     = gha
+bank        = [plugin1 plugin2]
+mixer       = [1 1]
+chain       = [mixer bank]
+process     = chain
+noch        = 2
+plugin1.dsl_ear=1
+plugin2.dsl_ear=2
+intersect
+input=test/carrots.wav
+output=twoplg.wav

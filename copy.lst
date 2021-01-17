@@ -1,0 +1,7 @@
+# copy.lst - test reporoducibilty of output file
+srate=24000
+input=spikes.wav
+output=copy.wav
+spl_ref=0
+mixer=1
+process=mixer

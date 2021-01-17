@@ -1,0 +1,11 @@
+# stim.lst - creates WAV files from internally-generated stimuli
+process=mixer
+mixer=1
+spl_ref=0
+input=~impulse
+output=test/impulse.wav
+start
+input=~tone
+output=test/tone.wav
+start
+quit

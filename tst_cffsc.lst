@@ -1,0 +1,9 @@
+# tst_cffsc.lstr- test CFIR+ICMP
+srate       = 24000
+chunk       = 32
+process     = chain
+chain       = [p0.0 p1.0 p0.1]
+plugin0     = cfirfb
+plugin1     = icmp
+input       = test/cat.wav
+output      = test/tst_cffsc.wav

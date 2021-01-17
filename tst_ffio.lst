@@ -1,0 +1,13 @@
+# tst_ffio.lst - test FIR filterbank
+srate       = 24000
+chunk       = 32
+spl_ref     = 0
+process     = chain
+chain       = [plugin.0 plugin.1]
+plugin      = firfb
+input       = test/impulse.wav
+output      = test/ffio_impulse.wav
+start
+input       = test/tone.wav
+output      = test/ffio_tone.wav
+start

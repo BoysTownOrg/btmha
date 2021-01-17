@@ -1,0 +1,81 @@
+# makefile for BTMHA under MinGW
+
+LIBS=-lsigpro -lchapro -larsc -lm -lz -lwinmm -lkernel32 -luser32 -lgdi32
+CC=gcc
+AR=ar
+
+CFLAGS=-Wall -DALSA -DANSI_C -fPIC -I$(INCDIR) -fPIC -O2
+LFLAGS=-L$(LIBDIR)
+
+LIBDIR=c:/usr/lib
+INCDIR=c:/usr/include
+BINDIR=c:/usr/bin
+
+OFILES=eval.o optimize.o state.o interactive.o var_list.o process.o stream.o 
+PFILES=afc.o agc.o cfirfb.o ciirfb.o firfb.o gha.o icmp.o iirfb.o plugin.o plugin_ver.o 
+PGMS=btmha
+
+all: $(PGMS) $(PLUGINS)
+
+gha: $(PGMS) $(PLUGINS)
+	./btmha tst_gha intersect
+
+tst: $(PGMS) $(PLUGINS)
+	./btmha tst_ifio
+	./btmha tst_ffio
+	./btmha tst_cifio
+	./btmha tst_cffio
+	./btmha tst_ifsc
+	./btmha tst_ffsc
+	./btmha tst_cifsc
+	./btmha tst_cffsc
+	./btmha tst_afc
+
+btmha : btmha.o $(OFILES) libbtmha.a
+	$(CC) $(LFLAGS) -o $@ $^ $(LIBS)
+
+libbtmha.a : $(PFILES)
+	$(AR) rs libbtmha.a $(PFILES)
+
+install: $(PGMS)
+	cp -f $(PGMS) $(BINDIR)
+
+version:
+	perl version.pl
+
+btmha-win.zip: btmha.iss
+	../setup/iscc btmha.iss
+	zip -j btmha-win Output/setup.exe VS16/readme.txt
+	rm -rf Output
+
+zipsrc:
+	zip btmhasc *.mgw *.lnx *.mac
+	zip btmhasc *.h *.c *.m *.pl *.lst *.ico *.iss test/ca*.wav
+	zip btmhasc VS16/*.sln VS16/*.vcxproj VS16/*.filters VS16/*.rc VS16/*.h VS16/readme.txt
+	zip btmhasc configure configure.bat 
+
+zipdem:
+	zip -j btmha-dem VS16\Release\btmha.exe
+	zip btmha-dem tst_*.lst tst_*.m
+	zip btmha-dem test/carrots.wav test/cat.wav test/impulse.wav test/tone.wav
+
+dist: version zipsrc zipdem btmha-win.zip
+	cp -f btmha*.zip ../dist
+	rm -f *.zip
+
+clean:
+	rm -f *.o *.obj *.bak *.a *.exe $(PGMS) 
+	rm -f *.mat *.wav *.cfg *~ *.so
+	rm -f gprof*.txt gmon.out
+	rm -f test/*.mat test/*_*.wav
+
+# dependencies
+btmha.o: btmha.h var_list.h version.h
+eval.o: eval.h
+gha.o: plugin_helper.h
+interactive.o: btmha.h fk.h
+optimize.o: btmha.h
+load.o: btmha.h 
+process.o: var_list.h btmha.h
+state.o: btmha.h 
+var_list.o: eval.h var_list.h 

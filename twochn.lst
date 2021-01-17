@@ -1,0 +1,6 @@
+# twochn.lst - test two-channel output
+input=test/carrots.wav
+output=twochn.wav
+process=mixer
+noch=2
+mixer=[1 1]

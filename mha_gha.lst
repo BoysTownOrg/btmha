@@ -1,0 +1,6 @@
+# mha_gha.lst - BTMHA example for generic hearing aid
+sampling_rate=24000
+chunk_size=16
+plugin_name=plugin_gha
+input=test/carrots.wav
+output=test/carrots_out.wav

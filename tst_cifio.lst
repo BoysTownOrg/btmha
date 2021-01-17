@@ -1,0 +1,13 @@
+# tst_cifio.lst - test CIIR filterbank
+srate       = 24000
+chunk       = 32
+spl_ref     = 0
+process     = chain
+chain       = [plugin.0 plugin.1]
+plugin      = ciirfb
+input       = test/impulse.wav
+output      = test/cifio_impulse.wav
+start
+input       = test/tone.wav
+output      = test/cifio_tone.wav
+start

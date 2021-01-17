@@ -1,0 +1,12 @@
+# bnk.lst - bank-of-mixers example
+input=test/carrots.wav
+output=playback
+mixer1=1
+mixer2=[1 1]
+mixer3=[1;1;1]/3
+bank=[mixer1 mixer2]
+chain=[mixer2 bank mixer3]
+process=chain
+mixer
+bank
+chain

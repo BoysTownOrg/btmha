@@ -1,0 +1,9 @@
+# tst_ifsc.lst - test IIR+AGC
+srate       = 24000
+chunk       = 32
+process     = chain
+chain       = [plugin1.0 plugin0.0 plugin1.1 plugin0.1 plugin1.2]
+plugin0     = iirfb
+plugin1     = agc
+input       = test/cat.wav
+output      = test/tst_ifsc.wav

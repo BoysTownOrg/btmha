@@ -1,0 +1,10 @@
+# gha_demo.lst - generic hearing aid example
+process     = plugin
+plugin      = gha
+srate       = 24000
+input       = test/carrots.wav
+output      = test/gha.wav
+datfile     = test/gha.mat
+chunk       = 32
+cross_freq  = [317.2 503.0 797.6 1265 2006 3181 5045]
+comp_ratio  = [0.7 0.9 1 1.1 1.2 1.4 1.6 1.7]

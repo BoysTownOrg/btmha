@@ -1,0 +1,8 @@
+# tst_ex1.lst - test generic hearing aid example
+srate       = 24000
+chunk       = 32
+process     = plugin
+plugin      = gha
+cross_freq  = [317.2 503.0 797.6 1265 2006 3181 5045]
+input       = test/carrots.wav
+output      = test/tst_gha.wav

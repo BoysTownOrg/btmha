@@ -1,0 +1,14 @@
+# patient.lst - example of an individual prescription
+mha_gha       # generic hearing aid parameters
+channels_in = 1
+cross_freq  = [317 503 798 1265 2006 3181 5045]
+comp_ratio  = [1.1 1.1 1.2 1.1 1.5 1.6 1.6 2.1]
+agc_tk      = [32 32 37 29 38 39 35 39]
+agc_tkgain  = [2 2 10 2 27 36 34 49]
+agc_bolt    = [100 100 100 100 100 100 100 100]
+agc_attack  = 5
+agc_release = 50
+agc_maxdB   = 119
+testing     =  [one two three]
+pi=3.1415927
+tpi=2*pi

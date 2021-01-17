@@ -1,0 +1,15 @@
+-- TODO --
+- write BTMHA tutorial
+- split gha plugin
+- implement plugin multiple-entry feature
+- back-propagate I/O changes to CHAPRO
+- fix two-channel audio output
+- complete 8 example plugins
+-- DONE --
+- add selective optimization feature
+- restrict plugin parameter scope
+- added clear command
+- change name of chapro_gha to gha
+- consolidate mha variables into struct
+- fix I/O WAV file alignment
+- fix two-channel WAV output

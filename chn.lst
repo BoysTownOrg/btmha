@@ -1,0 +1,11 @@
+# chn.lst - chain-of-mixers example
+input=test/carrots.wav
+output=playback
+mixer1=[1 2 3]
+mixer2=[1;1;1]/6
+chain1=[mixer1 mixer2]
+process=chain1
+start
+chain2=[mixer1 mixer2 chain1]
+process=chain2
+start
