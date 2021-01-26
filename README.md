@@ -1,8 +1,15 @@
 BTMHA - Boys Town "Master Hearing Aid" Simulation
 
 IntroductionBTMHA provides a software platform for exploration of hearing-aid signal processing.The BTMHA program performs three primary tasks:
-(1) Establishes input and output streams.(2) Sets up a signal processor between the input and output.(3) Starts the stream and maintains its operation until finished.The inputs and outputs may be files or may be an audio device. The signal processing may be a single plugin that is precompiled in a separate file or may be a combination of multiple plugins connected by mixers into chains and banks.
-The software design is intended to support three levels of users:(1) Research Audiologists who want the ability to easily adjust signal-processing parameters.(2) Application engineers who want to reconfigure existing signal-processing plugins without recompiling code.(3) Signal-processing engineers who want to code new algorithms.A modular design has been adopted to replacement of code with alternative implementations. The program is written entirely in C to reduce its system dependence. The installation “footprint” is kept small by limiting its software package dependence to three open-source libraries developed at BTNRH.
+
+(1) Establishes input and output streams.
+(2) Sets up a signal processor between the input and output.
+(3) Starts the stream and maintains its operation until finished.The inputs and outputs may be files or may be an audio device. The signal processing may be a single plugin that is precompiled in a separate file or may be a combination of multiple plugins connected by mixers into chains and banks.
+The software design is intended to support three levels of users:
+
+(1) Research Audiologists who want the ability to easily adjust signal-processing parameters.
+(2) Application engineers who want to reconfigure existing signal-processing plugins without recompiling code.
+(3) Signal-processing engineers who want to code new algorithms.A modular design has been adopted to replacement of code with alternative implementations. The program is written entirely in C to reduce its system dependence. The installation “footprint” is kept small by limiting its software package dependence to three open-source libraries developed at BTNRH.
 
 Source Code InstallationThe dependence of BTMHA on other software packages is limited to three BTNRH libraries:(1) ARSC – a library of functions for platform-independent access of audio devices.(2) SIGPRO – a library of basic signal-processing functions.(3) CHAPRO – a library of functions for simulating hearing-aid signal processing.
 Although the source code compiles and runs under three different operating systems (MacOS, Windows, and Linux), version 0.05 has only been fully tested under MacOS in a Terminal window. The following installation instructions are for the Mac.Compilation in the MacOS Terminal window requires prior installation of Xcode command-line tools. 
