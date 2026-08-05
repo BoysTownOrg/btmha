@@ -41,10 +41,10 @@ install: $(PGMS)
 	cp -f $(PGMS) $(BINDIR)
 
 zipsrc:
-	zip btmhasc *.mgw *.lnx *.mac
+	zip btmhasc *.lnx *.mac
 	zip btmhasc *.h *.c *.m *.pl *.lst *.ico *.iss test/ca*.wav
 	zip btmhasc VS16/*.sln VS16/*.vcxproj VS16/*.filters VS16/*.rc VS16/*.h VS16/readme.txt
-	zip btmhasc configure configure.bat 
+	zip btmhasc configure
 
 dist: zipsrc 
 	cp -f btmha*.zip ../dist

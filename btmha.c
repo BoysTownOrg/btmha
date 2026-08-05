@@ -9,6 +9,7 @@
 
 #include <sigpro.h>
 #include "btmha.h"
+#include "process.h"
 #include "eval.h"
 #include "stream.h"
 #include "var_list.h"
@@ -36,16 +37,8 @@
 char* skipwhite(char*);
 char* stream_version();
 char* plugin_version();
-int process_config(VAR *, char *, int);
-int is_processor(char *, char *, int *);
-int optimize_config(VAR *, char *);
-void optimize_plugin(I_O *, STA *, VAR *, int, double, char *);
 void plugin_config(VAR *, char *, char *, int);
 void plugin_show(char, char *, char *, int);
-void process_prepare(STA *, VAR *, MHA *, char *, int *, char *);
-void process_cleanup();
-void process_init();
-void process_show(VAR *, char *, char *);
 
 //===========================================================
 

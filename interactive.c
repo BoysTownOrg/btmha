@@ -4,15 +4,18 @@
 #include <stdlib.h>
 #include <string.h>
 #include "btmha.h"
+#include "fk.h"
 
 #ifdef WIN32
-#define TERMIO          0
+#include <conio.h>
+#include <windows.h>
+#include <io.h>
+#define TERMIO          1
 #else
 #include <termios.h>
 #include <unistd.h>
 #include <fcntl.h>
 #include <sys/types.h>
-#include "fk.h"
 #define _strdup         strdup
 #define TERMIO          1
 #endif
@@ -37,6 +40,8 @@ static enum { normal, test_key, wait_key, unknown } kbd_mode = unknown;
 
 static char *hist[NHIST] = {NULL};
 static int head = 0, tail = 0, curl = 0;
+
+#ifndef WIN32
 
 static void
 kbd_restore(void)
@@ -93,6 +98,54 @@ get_ch(void)
         }
         return(EOF);
 }
+
+#else // WIN32
+
+#ifndef ENABLE_VIRTUAL_TERMINAL_PROCESSING
+#define ENABLE_VIRTUAL_TERMINAL_PROCESSING 0x0004
+#endif
+
+static HANDLE hOut;
+static DWORD dwOriginalOutMode;
+
+static void kbd_restore(void) {
+    if (kbd_initted && hOut != INVALID_HANDLE_VALUE) {
+        SetConsoleMode(hOut, dwOriginalOutMode);
+    }
+}
+
+static void kbd_init(void) {
+    if (!kbd_initted) {
+        kbd_initted = TRUE;
+        kbd_isatty = _isatty(_fileno(stdin));
+        hOut = GetStdHandle(STD_OUTPUT_HANDLE);
+        if (hOut != INVALID_HANDLE_VALUE) {
+            if (GetConsoleMode(hOut, &dwOriginalOutMode)) {
+                DWORD dwMode = dwOriginalOutMode | ENABLE_VIRTUAL_TERMINAL_PROCESSING;
+                SetConsoleMode(hOut, dwMode);
+                atexit(kbd_restore);
+            }
+        }
+    }
+}
+
+int get_ch(void) {
+    int c;
+    if (!kbd_initted) {
+        kbd_init();
+    }
+    if (!kbd_isatty) {
+        return getc(stdin);
+    }
+    c = _getch();
+    if (c == 0 || c == 224) {
+        c = _getch();
+        return (FN | c);
+    }
+    return c;
+}
+
+#endif // WIN32
 
 
 static int

@@ -7,7 +7,7 @@ int stream_device(int io_dev);
 void stream_start(I_O *, STA *);
 void stream_init(MHA *mha);
 void stream_show(char *line);
-void stream_cleanup();
+void stream_cleanup(void);
 void stream_replace(MHA *mha, VAR *lvl);
 void play_wave(I_O *, int);
 void sound_check(double, int);

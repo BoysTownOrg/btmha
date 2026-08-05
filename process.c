@@ -5,8 +5,11 @@
 #include <string.h>
 #include <ctype.h>
 #include <math.h>
-#include "var_list.h"
 #include "btmha.h"
+#include "stream.h"
+#include "eval.h"
+#include "var_list.h"
+#include "process.h"
 
 #define MAX_DEPTH 64
 
@@ -722,7 +725,7 @@ plugin_config(VAR *lvl, char *p, char *plug, int n)
 /***********************************************************/
 
 void
-process_init()
+process_init(void)
 {
     pvl = (VAR *) calloc(MAX_VAR, sizeof(VAR));
     ivl = (VAR *) calloc(MAX_VAR, sizeof(VAR));
@@ -786,7 +789,7 @@ process_prepare(STA *st, VAR *lvl, MHA *mha, char *p, int *rc, char *msg)
 }
 
 void
-process_cleanup()
+process_cleanup(void)
 {
     int i;
 

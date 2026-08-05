@@ -269,16 +269,35 @@ op_prec(int c)
 static int
 do_op_add(VAR *vs, int m)
 {
-    double *p1, *p2;
-    int i, nr, nc, nn;
+    double dv, *p1, *p2;
+    int i, n, n1, n2;
 
+    n = m + 1;
+    n1 = vs[m].rows * vs[m].cols; 
+    n2 = vs[n].rows * vs[n].cols; 
     p1 = vs[m].data;
-    p2 = vs[m + 1].data;
-    nr = vs[m].rows;        
-    nc = vs[m].cols;        
-    nn = nr * nc;
-    for (i = 0; i < nn; i++) {
-        p1[i] += p2[i];
+    p2 = vs[n].data;
+    if ((n1 == 1) && (n2 == 1)) {
+        vs[m].rows = 1;        
+        vs[m].cols = 1;        
+        p1[0] += p2[0];        
+    } else if (n1 == 1) {
+        vs[m].rows = vs[n].rows;
+        vs[m].cols = vs[n].cols;
+        dv = p1[0];
+        for (i = 0; i < n2; i++) {
+            p1[i] = dv + p2[i];
+        }
+    } else if (n2 == 1) {
+        for (i = 0; i < n1; i++) {
+            p1[i] += p2[0];
+        }
+    } else if (vs[m].rows == vs[n].rows && vs[m].cols == vs[n].cols) {
+        for (i = 0; i < n1; i++) {
+            p1[i] += p2[i];
+        }
+    } else {
+        return (-1);
     }
     return (0);
 }
@@ -286,16 +305,35 @@ do_op_add(VAR *vs, int m)
 static int
 do_op_sub(VAR *vs, int m)
 {
-    double *p1, *p2;
-    int i, nr, nc, nn;
+    double dv, *p1, *p2;
+    int i, n, n1, n2;
 
+    n = m + 1;
+    n1 = vs[m].rows * vs[m].cols; 
+    n2 = vs[n].rows * vs[n].cols; 
     p1 = vs[m].data;
-    p2 = vs[m + 1].data;
-    nr = vs[m].rows;        
-    nc = vs[m].cols;        
-    nn = nr * nc;
-    for (i = 0; i < nn; i++) {
-        p1[i] -= p2[i];
+    p2 = vs[n].data;
+    if ((n1 == 1) && (n2 == 1)) {
+        vs[m].rows = 1;        
+        vs[m].cols = 1;        
+        p1[0] -= p2[0];        
+    } else if (n1 == 1) {
+        vs[m].rows = vs[n].rows;
+        vs[m].cols = vs[n].cols;
+        dv = p1[0];
+        for (i = 0; i < n2; i++) {
+            p1[i] = dv - p2[i];
+        }
+    } else if (n2 == 1) {
+        for (i = 0; i < n1; i++) {
+            p1[i] -= p2[0];
+        }
+    } else if (vs[m].rows == vs[n].rows && vs[m].cols == vs[n].cols) {
+        for (i = 0; i < n1; i++) {
+            p1[i] -= p2[i];
+        }
+    } else {
+        return (-1);
     }
     return (0);
 }
@@ -354,7 +392,7 @@ static int
 do_op_mul_ebe(VAR *vs, int m)
 {
     double dv, *p1, *p2;
-    int i, n, n1, n2, nn;
+    int i, n, n1, n2;
 
     n = m + 1;
     n1 = vs[m].rows * vs[m].cols; 
@@ -377,8 +415,7 @@ do_op_mul_ebe(VAR *vs, int m)
             p1[i] *= p2[0];
         }
     } else if (n1 == n2) {
-        nn = n1 * n2;
-        for (i = 0; i < nn; i++) {
+        for (i = 0; i < n1; i++) {
             p1[i] *= p2[i];
         }
     } else {
@@ -425,7 +462,7 @@ static int
 do_op_div_ebe(VAR *vs, int m)
 {
     double dv, *p1, *p2;
-    int i, n, n1, n2, nn;
+    int i, n, n1, n2;
 
     n = m + 1;
     n1 = vs[m].rows * vs[m].cols; 
@@ -450,8 +487,7 @@ do_op_div_ebe(VAR *vs, int m)
             p1[i] /= p2[0];
         }
     } else if (n1 == n2) {
-        nn = n1 * n2;
-        for (i = 0; i < nn; i++) {
+        for (i = 0; i < n1; i++) {
             if (p2[i] == 0) return (-1);
             p1[i] /= p2[i];
         }
@@ -556,6 +592,88 @@ do_op_transpose(VAR *vs, int m)
 }
 
 static int
+do_op_scalar(VAR *vs, int m, int op)
+{
+    double dv, *p1, *p2;
+    int i, n, n1, n2;
+
+    n = m + 1;
+    n1 = vs[m].rows * vs[m].cols; 
+    n2 = vs[n].rows * vs[n].cols; 
+    p1 = vs[m].data;
+    p2 = vs[n].data;
+    if ((n1 == 1) && (n2 == 1)) {
+        vs[m].rows = 1;        
+        vs[m].cols = 1;        
+        if (op == '%') p1[0] = fmod(p1[0], p2[0]);
+        else if (op == '<') p1[0] = (p1[0] < p2[0]);
+        else if (op == '>') p1[0] = (p1[0] > p2[0]);
+        else if (op == '&') p1[0] = (p1[0] && p2[0]);
+        else if (op == '|') p1[0] = (p1[0] || p2[0]);
+        else if (op == ('<' + EQ)) p1[0] = (p1[0] <= p2[0]);
+        else if (op == ('>' + EQ)) p1[0] = (p1[0] >= p2[0]);
+        else if (op == ('=' + EQ)) p1[0] = (p1[0] == p2[0]);
+        else if (op == ('~' + EQ)) p1[0] = (p1[0] != p2[0]);
+    } else if (n1 == 1) {
+        vs[m].rows = vs[n].rows;
+        vs[m].cols = vs[n].cols;
+        dv = p1[0];
+        for (i = 0; i < n2; i++) {
+            if (op == '%') p1[i] = fmod(dv, p2[i]);
+            else if (op == '<') p1[i] = (dv < p2[i]);
+            else if (op == '>') p1[i] = (dv > p2[i]);
+            else if (op == '&') p1[i] = (dv && p2[i]);
+            else if (op == '|') p1[i] = (dv || p2[i]);
+            else if (op == ('<' + EQ)) p1[i] = (dv <= p2[i]);
+            else if (op == ('>' + EQ)) p1[i] = (dv >= p2[i]);
+            else if (op == ('=' + EQ)) p1[i] = (dv == p2[i]);
+            else if (op == ('~' + EQ)) p1[i] = (dv != p2[i]);
+        }
+    } else if (n2 == 1) {
+        for (i = 0; i < n1; i++) {
+            if (op == '%') p1[i] = fmod(p1[i], p2[0]);
+            else if (op == '<') p1[i] = (p1[i] < p2[0]);
+            else if (op == '>') p1[i] = (p1[i] > p2[0]);
+            else if (op == '&') p1[i] = (p1[i] && p2[0]);
+            else if (op == '|') p1[i] = (p1[i] || p2[0]);
+            else if (op == ('<' + EQ)) p1[i] = (p1[i] <= p2[0]);
+            else if (op == ('>' + EQ)) p1[i] = (p1[i] >= p2[0]);
+            else if (op == ('=' + EQ)) p1[i] = (p1[i] == p2[0]);
+            else if (op == ('~' + EQ)) p1[i] = (p1[i] != p2[0]);
+        }
+    } else if (vs[m].rows == vs[n].rows && vs[m].cols == vs[n].cols) {
+        for (i = 0; i < n1; i++) {
+            if (op == '%') p1[i] = fmod(p1[i], p2[i]);
+            else if (op == '<') p1[i] = (p1[i] < p2[i]);
+            else if (op == '>') p1[i] = (p1[i] > p2[i]);
+            else if (op == '&') p1[i] = (p1[i] && p2[i]);
+            else if (op == '|') p1[i] = (p1[i] || p2[i]);
+            else if (op == ('<' + EQ)) p1[i] = (p1[i] <= p2[i]);
+            else if (op == ('>' + EQ)) p1[i] = (p1[i] >= p2[i]);
+            else if (op == ('=' + EQ)) p1[i] = (p1[i] == p2[i]);
+            else if (op == ('~' + EQ)) p1[i] = (p1[i] != p2[i]);
+        }
+    } else {
+        return (-1);
+    }
+    return (0);
+}
+
+static int
+do_op_not(VAR *vs, int m)
+{
+    int i, n, n2;
+    n = m + 1;
+    n2 = vs[n].rows * vs[n].cols;
+    vs[m].rows = vs[n].rows;
+    vs[m].cols = vs[n].cols;
+    for (i = 0; i < n2; i++) {
+        vs[m].data[i] = !vs[n].data[i];
+    }
+    return (0);
+}
+
+static int
 do_op(VAR *vs, int *opst, int *pnnbs, int *pnops, int *pi)
 {
     int     i, e = 0;
@@ -587,39 +705,23 @@ do_op(VAR *vs, int *opst, int *pnnbs, int *pnops, int *pi)
         e = do_op_pow_ebe(vs, i);
 	break;
     case '%':
-	vs[i].data[0] = fmod(vs[i].data[0],vs[i + 1].data[0]);
-	break;
     case '<':
-	vs[i].data[0] = (vs[i].data[0] < vs[i + 1].data[0]);
-	break;
     case '>':
-	vs[i].data[0] = (vs[i].data[0] > vs[i + 1].data[0]);
-	break;
     case '&':
- 	vs[i].data[0] = (vs[i].data[0] && vs[i + 1].data[0]);
-	break;
     case '|':
-	vs[i].data[0] = (vs[i].data[0] || vs[i + 1].data[0]);
+    case ('<' + EQ):
+    case ('>' + EQ):
+    case ('=' + EQ):
+    case ('~' + EQ):
+        e = do_op_scalar(vs, i, opst[i] & 255);
 	break;
     case '~':
-	vs[i].data[0] = !vs[i + 1].data[0];
-	break;
-    case ('<' + EQ):
-	vs[i].data[0] = (vs[i].data[0] <= vs[i + 1].data[0]);
-	break;
-    case ('>' + EQ):
-	vs[i].data[0] = (vs[i].data[0] >= vs[i + 1].data[0]);
-	break;
-    case ('=' + EQ):
-	vs[i].data[0] = (vs[i].data[0] == vs[i + 1].data[0]);
-	break;
-    case ('~' + EQ):
-	vs[i].data[0] = (vs[i].data[0] != vs[i + 1].data[0]);
+        e = do_op_not(vs, i);
 	break;
     }
     (*pnnbs)--;
     for (i = *pi; i < *pnnbs; i++) {
-        vs[i].data[0] = vs[i + 1].data[0];
+        vs[i] = vs[i + 1];
     }
     (*pnops)--;
     (*pi)--;
@@ -631,9 +733,7 @@ do_op(VAR *vs, int *opst, int *pnnbs, int *pnops, int *pi)
 }
 
 static int
-ctof(s, v)
-char   *s;
-double *v;
+ctof(char *s, double *v)
 {
     char   *b, n;
     double  d, p;
@@ -697,9 +797,8 @@ double *v;
 #define FN_ATH  16
 #define FN_SEL  17
 
-int
-lookup_func(s)
-char   *s;
+static int
+lookup_func(char *s)
 {
     int     i;
     static char *fn[] = {
@@ -888,9 +987,7 @@ parse_args(char *s, VAR *va, int *n)
 /**********************************************************************/
 
 static void
-expr_err(s, e, c)
-char   *s, *e;
-int     c;
+expr_err(char *s, char *e, int c)
 {
     char *msg;
     int     i, m, n;

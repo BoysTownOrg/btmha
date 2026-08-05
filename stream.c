@@ -267,7 +267,7 @@ stream_start(I_O *io, STA *st)
     int i, j, m, n, cs, nk, w;
     double t1, t2;
 
-    process_chunk = st->proc;
+    process_chunk = (void (*)(void **, float *, float *, int)) st->proc;
     if (io->ofn) {
         sp_tic();
         // initialize i/o pointers
@@ -360,7 +360,7 @@ stream_replace(MHA *mha, VAR *lvl)
 }
 
 void
-stream_cleanup()
+stream_cleanup(void)
 {
     var_list_cleanup(svl);
 }
@@ -372,7 +372,7 @@ stream_show(char* line)
 }
 
 char *
-stream_version()
+stream_version(void)
 {
     return ar_version();
 }
