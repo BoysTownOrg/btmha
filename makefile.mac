@@ -1,18 +1,18 @@
 # makefile for BTMHA under MacOS
 
-LIBS=-lsigpro -lchapro -larsc -lz -lm
+LIBS=/usr/local/lib/libsigpro.a ../chapro/libchapro.a /usr/local/lib/libarsc.a -lz -lm
 CC=gcc
 AR=ar
 
-CFLAGS = -Wall -DALSA -DANSI_C -fPIC -I$(INCDIR) -fPIC -O2
-LFLAGS= -framework CoreServices  -framework CoreAudio \
-        -framework AudioUnit -framework AudioToolbox -L$(LIBDIR)
+CFLAGS = -Wall -arch arm64 -DMAC -Dlinux -DALSA -DANSI_C -fPIC -I$(INCDIR) -fPIC -O2
+LFLAGS= -arch arm64 -framework CoreServices  -framework CoreAudio \
+        -framework AudioUnit -framework AudioToolbox -framework Cocoa
 
 LIBDIR=/usr/local/lib
 INCDIR=/usr/local/include
 BINDIR=/usr/local/bin
 
-OFILES=eval.o optimize.o state.o interactive.o var_list.o process.o stream.o 
+OFILES=eval.o optimize.o state.o interactive.o var_list.o process.o stream.o gr_mac.o 
 PFILES=afc.o agc.o cfirfb.o ciirfb.o firfb.o gha.o icmp.o iirfb.o plugin.o plugin_ver.o 
 PGMS=btmha
 

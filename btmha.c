@@ -323,6 +323,20 @@ do_assign(char *line)
 }
 
 static void
+do_export(char *line)
+{
+    char *fn = skipwhite(line);
+    if (*fn == '\0') {
+        fn = "btmha_export";
+    }
+    if (var_list_length(lvl) > 0) {
+        var_list_export_c(lvl, fn);
+    } else {
+        printf("List is empty. Nothing to export.\n");
+    }
+}
+
+static void
 do_list(char *line)
 {
     if (var_list_length(lvl) > 0) {
@@ -564,6 +578,8 @@ cmd_match(char* line, char* cmd)
     return ((strncmp(line, cmd, n) == 0) && (*e == 0 || isspace(*e)));
 }
 
+static void do_plot(char *line);
+
 void
 parse_line(char *line, char quiet)
 {
@@ -574,16 +590,18 @@ parse_line(char *line, char quiet)
         ;
     } else if (strchr(line, '=')) {             // assignment
         do_assign(line);
-    } else if (cmd_prefx(line, "bank")) {       // bank command
+    } else if (cmd_match(line, "bank")) {       // bank command
         do_bank(line);
-    } else if (cmd_match(line, "cd")) {         // cd command
-        do_cd(line);
     } else if (cmd_prefx(line, "chain")) {      // chain command
         do_chain(line);
     } else if (cmd_match(line, "clear")) {      // clear command
         do_clear(0);
+    } else if (cmd_match(line, "cd")) {         // cd command
+        do_cd(line);
     } else if (cmd_prefx(line, "device")) {     // device command
         do_device();
+    } else if (cmd_match(line, "export")) {     // export command
+        do_export(line);
     } else if (cmd_match(line, "help")) {       // help command
         do_help();
     } else if (cmd_match(line, "intersect")) {  // intersect command
@@ -598,6 +616,8 @@ parse_line(char *line, char quiet)
         do_optimize(line);
     } else if (cmd_match(line, "play")) {       // play command
         do_play(line);
+    } else if (cmd_match(line, "plot")) {       // plot command
+        do_plot(line);
     } else if (cmd_prefx(line, "plugin")) {     // plugin command
         do_plugin(line);
     } else if (cmd_match(line, "prepare")) {    // prepare command
@@ -619,6 +639,86 @@ parse_line(char *line, char quiet)
         printf("Don't understand %s.\n", line);
     }
     free(line);                           // release local copy
+}
+
+int gr_mode = 2; // needed by gr_mac.m
+#ifdef WIN32
+extern void gr_cinit(void);
+extern void gr_line(int x1, int y1, int x2, int y2, int c);
+extern void gr_clrb(int x1, int y1, int x2, int y2);
+extern void gr_update(int mstatus);
+#define gr_init gr_cinit
+#define gr_flush() gr_update(0)
+#else
+extern void xw_init(void);
+extern void xw_line(int x1, int y1, int x2, int y2, int c);
+extern void xw_clrb(int x1, int y1, int x2, int y2);
+extern void xw_flush(void);
+#define gr_init xw_init
+#define gr_line xw_line
+#define gr_clrb xw_clrb
+#define gr_flush xw_flush
+#endif
+extern int xpix, ypix;
+
+static void
+do_plot(char *line)
+{
+    char *vn = skipalphnum(line);
+    vn = skipwhite(vn);
+    if (!vn || !*vn) {
+        printf("plot: missing variable name\n");
+        return;
+    }
+    int i = var_list_index(lvl, vn);
+    if (i < 0 || i >= MAX_VAR || !lvl[i].data) {
+        printf("plot: variable %s not found\n", vn);
+        return;
+    }
+
+    if (lvl[i].dtyp != 8 && lvl[i].dtyp != 9) {
+        printf("plot: variable must be a float or double array\n");
+        return;
+    }
+
+    int nn = lvl[i].rows * lvl[i].cols;
+    if (nn <= 1) {
+        printf("plot: variable must be an array\n");
+        return;
+    }
+
+    double *data = (double *)lvl[i].data;
+    double min_val = data[0], max_val = data[0];
+    for (int j = 1; j < nn; j++) {
+        if (data[j] < min_val) min_val = data[j];
+        if (data[j] > max_val) max_val = data[j];
+    }
+
+    gr_init(); // Initialize graphics window
+    gr_clrb(0, 0, xpix, ypix); // Clear screen
+
+    // Simple auto-scaling to fit the window (leaving a 10% margin)
+    int margin_x = xpix / 10;
+    int margin_y = ypix / 10;
+    int plot_w = xpix - 2 * margin_x;
+    int plot_h = ypix - 2 * margin_y;
+
+    double range = max_val - min_val;
+    if (range == 0) range = 1.0;
+
+    int prev_x = margin_x;
+    int prev_y = ypix - margin_y - (int)((data[0] - min_val) / range * plot_h);
+
+    for (int j = 1; j < nn; j++) {
+        int x = margin_x + (j * plot_w) / (nn - 1);
+        int y = ypix - margin_y - (int)((data[j] - min_val) / range * plot_h);
+        gr_line(prev_x, prev_y, x, y, 4); // Color 4 = red
+        prev_x = x;
+        prev_y = y;
+    }
+
+    gr_flush(); // Force draw
+    printf("Plotted %s (%d points)\n", vn, nn);
 }
 
 static void
@@ -703,7 +803,7 @@ save_dir(char** av)
 }
 
 int
-main(int ac, char **av)
+btmha_main(int ac, char **av)
 {
     static char quiet = 0;
 

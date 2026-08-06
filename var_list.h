@@ -39,6 +39,7 @@ void var_list_eval(VAR *, char *);
 void var_list_replace(VAR *, VAR *);
 void var_list_show(VAR *, char *);
 void var_list_show_one(VAR *, int);
+void var_list_export_c(VAR *, const char *);
 
 //===========================================================
 

@@ -1,17 +1,17 @@
 # makefile for BTMHA under Linux
 
-LIBS=-lsigpro -lchapro -larsc -lasound -ldl -lm -lz
+LIBS=-lsigpro -lchapro -larsc -lasound -ldl -lm -lz -lX11 -lpthread
 CC=gcc
 AR=ar
 
-CFLAGS=-Wall -Wno-unknown-pragmas -Wno-unused-result -I$(INCDIR) -fPIC -O2
-LFLAGS=-L$(LIBDIR)
+CFLAGS=-Wall -Wno-unknown-pragmas -Wno-unused-result -I$(INCDIR) -I/usr/X11R6/include -fPIC -O2
+LFLAGS=-L$(LIBDIR) -L/usr/X11R6/lib
 
 LIBDIR=/usr/local/lib
 INCDIR=/usr/local/include
 BINDIR=/usr/local/bin
 
-OFILES=eval.o optimize.o state.o interactive.o var_list.o process.o stream.o 
+OFILES=eval.o optimize.o state.o interactive.o var_list.o process.o stream.o gr_xw.o 
 PFILES=afc.o agc.o cfirfb.o ciirfb.o firfb.o gha.o icmp.o iirfb.o plugin.o plugin_ver.o 
 PGMS=btmha
 
