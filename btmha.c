@@ -747,7 +747,7 @@ parse_args(int ac, char *av[], char *quiet)
     }
 }
 
-static void
+void
 mha_init(char quiet)
 {
     if (lvl == NULL) {
@@ -769,8 +769,8 @@ state_cleanup()
     }
 }
 
-static void
-mha_cleanup()
+void
+mha_cleanup(void)
 {
     sp_var_clear_all();
     stream_cleanup();
